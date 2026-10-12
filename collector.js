@@ -260,8 +260,18 @@
    * otherwise our own edits would keep re-triggering the MutationObserver.
    */
   function decorate() {
-    for (const { key, img, item } of collectVisiblePins()) {
+    let boardGrew = false;
+    for (const { key, thumb, img, item } of collectVisiblePins()) {
       if (item.dataset.pbdKey !== key) item.dataset.pbdKey = key;
+
+      // Review mode: pins loaded after collection stopped (user scrolled further)
+      // join the board unticked, so Select all and the "of M" count include them.
+      if (state.reviewMode && !state.boardIndex.has(key)) {
+        state.boardIndex.set(key, state.boardOrder.length);
+        state.boardOrder.push(key);
+        state.allThumbs.set(key, thumb);
+        boardGrew = true;
+      }
 
       let badge = item.querySelector(':scope > .pbd-badge');
       if (!badge) {
@@ -286,6 +296,7 @@
         img.classList.toggle('pbd-picked', isSelected);
       }
     }
+    if (boardGrew) updateSelectBar();
   }
 
   function toggleSelection(key, thumb) {
@@ -313,7 +324,8 @@
   }
 
   /**
-   * Review mode: tick every collected pin again, in board order.
+   * Review mode: tick every collected pin again (including ones loaded after
+   * collection stopped), in board order.
    * Select mode: add the pins currently on the page that aren't ticked yet, in grid order.
    */
   function selectAll() {

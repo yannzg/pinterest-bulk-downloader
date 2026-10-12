@@ -54,7 +54,6 @@
 
   // ---------- Tunables ----------
 
-  const TIKTOK_PHOTO_LIMIT = 35;
   const SCROLL_STEP_FRACTION = 0.8;
   const SCROLL_WAIT_MS = 900;
   const STABLE_ROUNDS_TO_FINISH = 5;
@@ -394,10 +393,6 @@
   function buildSelectBar() {
     const bar = el('div', { className: 'pbd-ui pbd-bar' });
     const count = el('span', { className: 'pbd-bar-count' });
-    const warning = el('span', {
-      className: 'pbd-bar-warning',
-      textContent: `TikTok allows up to ${TIKTOK_PHOTO_LIMIT} photos`,
-    });
     const all = el('button', { className: 'pbd-btn pbd-btn-ghost', textContent: 'Select all' });
     const clear = el('button', { className: 'pbd-btn pbd-btn-ghost', textContent: 'Clear' });
     const exit = el('button', { className: 'pbd-btn pbd-btn-ghost', textContent: 'Exit' });
@@ -408,11 +403,10 @@
     exit.addEventListener('click', teardown);
     download.addEventListener('click', onSelectDownload);
 
-    bar.append(count, sep(), all, sep(), clear, sep(), exit, download, warning);
+    bar.append(count, sep(), all, sep(), clear, sep(), exit, download);
     document.body.appendChild(bar);
     state.ui.bar = bar;
     state.ui.barCount = count;
-    state.ui.barWarning = warning;
     state.ui.barDownload = download;
     updateSelectBar();
 
@@ -427,7 +421,6 @@
     state.ui.barCount.textContent = state.reviewMode
       ? `${n} of ${state.boardOrder.length} selected`
       : `${n} selected`;
-    state.ui.barWarning.hidden = n <= TIKTOK_PHOTO_LIMIT;
     state.ui.barDownload.disabled = n === 0;
   }
 
@@ -805,19 +798,21 @@
   // =====================================================================
 
   /**
-   * "<user> - <board> - YYYY-MM-DD HHmm" for boards, or
-   * "Search - <query> - YYYY-MM-DD HHmm" for search results; safe as a folder name.
+   * "<board> - YYYY-MM-DD HHmmss" for boards, or
+   * "<query> - YYYY-MM-DD HHmmss" for search results; safe as a folder name.
+   * The timestamp keeps separate runs on the same board/search apart.
    */
   function buildFolderName() {
     const query = new URLSearchParams(location.search).get('q');
-    const segments = query && location.pathname.startsWith('/search/')
-      ? ['Search', query]
-      : location.pathname.split('/').filter(Boolean).map(safeDecode);
-    const board = segments.join(' - ').replace(/[\\/:*?"<>|]/g, '_').trim() || 'board';
+    // Board URLs are /<user>/<board>/[section/]: use the last segment.
+    const name = query && location.pathname.startsWith('/search/')
+      ? query
+      : safeDecode(location.pathname.split('/').filter(Boolean).pop() || '');
+    const board = name.replace(/[\\/:*?"<>|]/g, '_').trim() || 'board';
 
     const d = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    const stamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}${pad(d.getMinutes())}`;
+    const stamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
     return `${board} - ${stamp}`;
   }
 

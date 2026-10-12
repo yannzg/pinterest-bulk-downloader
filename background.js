@@ -4,7 +4,7 @@
  * Receives a download job from the page, then for each pin, in order:
  *   1. resolves the best-quality URL (/originals/ via HEAD probes, else /736x/),
  *   2. optionally renders it to a 1080×1920 JPEG (9:16 crop or blur fit),
- *   3. downloads it as PinterestBulkDownloader/<folder>/<NN>.<ext>,
+ *   3. downloads it as <folder>/<NN>.<ext> inside the Downloads folder,
  *   4. reports progress back to the tab.
  *
  * MV3 service workers can be killed when idle, so the job lives in
@@ -23,7 +23,6 @@ const ALLOWED_URL_PREFIX = 'https://i.pinimg.com/';
 
 // ---------- Tunables ----------
 
-const FOLDER_PREFIX = 'PinterestBulkDownloader';
 const DELAY_BETWEEN_ITEMS_MS = 150;
 const HEAD_TIMEOUT_MS = 8000;
 const GET_TIMEOUT_MS = 20000;
@@ -83,7 +82,7 @@ async function startJob(msg, tabId) {
 
   const job = {
     tabId,
-    folder: `${FOLDER_PREFIX}/${sanitizePathPart(msg.folder) || 'board'}`,
+    folder: sanitizePathPart(msg.folder) || 'board',
     format,
     pad: urls.length > 99 ? 4 : 2,
     total: urls.length,

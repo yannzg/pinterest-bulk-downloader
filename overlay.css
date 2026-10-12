@@ -92,18 +92,6 @@ img.pbd-picked {
   opacity: 0.4;
 }
 
-.pbd-bar-warning {
-  flex-basis: 100%;
-  padding: 0 10px 2px 0;
-  color: #ffb3c0;
-  font-size: 12px;
-  text-align: center;
-}
-
-.pbd-bar-warning[hidden] {
-  display: none;
-}
-
 /* ---------- Buttons ---------- */
 
 .pbd-btn {

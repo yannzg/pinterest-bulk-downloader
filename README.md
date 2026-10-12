@@ -27,7 +27,6 @@ and click the Pinterest Bulk Downloader icon.
 - Selected pins show their order number (1, 2, 3…). Deselecting renumbers the rest.
   Selections survive scrolling away and back.
 - The bar at the bottom shows the count, with **Select all**, **Clear**, **Exit** and **Download**.
-  It warns (without blocking) above 35 pins, TikTok's photo post limit.
 
 ### Download whole board
 The popup's **Up to N images** field (default 100, max 5,000, remembered) caps how many
@@ -44,7 +43,7 @@ In select mode, **Select all** ticks every pin currently loaded on the page.
 
 ### Download search results
 On a search page the second button reads **Download search results**. It works like
-whole-board mode, skipping ads ("Sponsored"), then shows the same review step. Files go to `PinterestBulkDownloader/Search - <query> - <date>/`.
+whole-board mode, skipping ads ("Sponsored"), then shows the same review step. Files go to `Downloads/<query> - <date>/`.
 
 ### Formats
 Chosen in the **Save as** panel right before downloading (your last choice is remembered),
@@ -57,7 +56,7 @@ with a live preview of the first image:
 | **9:16 blur fit** | 1080×1920 JPG: the whole image centered on a blurred, slightly darkened copy of itself. |
 
 Files are saved in order as `01.jpg`, `02.png`, … (4 digits past 99 images) to
-`Downloads/PinterestBulkDownloader/<user> - <board> - <YYYY-MM-DD HHmm>/`.
+`Downloads/<board> - <YYYY-MM-DD HHmmss>/`.
 Progress shows at the top right, with a **Stop** button.
 
 ## Known limitations
@@ -83,5 +82,4 @@ Progress shows at the top right, with a **Stop** button.
 
 ## Note
 
-Pinterest Bulk Downloader is for personal use. The images belong to their creators. Respect their rights
-and Pinterest's terms when reposting.
+Pinterest Bulk Downloader is for personal use. The images belong to their creators. Respect their rights and Pinterest's terms when reposting.
